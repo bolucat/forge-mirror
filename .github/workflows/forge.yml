@@ -19,7 +19,7 @@ jobs:
       - name: Download forge
         run: |
           LINK="https://maven.minecraftforge.net/net/minecraftforge/forge/${{ env.VERSION }}/forge-${{ env.VERSION }}-installer.jar"
-          FILE="forge-${{ env.VERSION }}-installer.jar"
+          FILE="forge-installer.jar"
           wget -O ${FILE} "${LINK}"
           mkdir -p release && mv ${FILE} release
 
