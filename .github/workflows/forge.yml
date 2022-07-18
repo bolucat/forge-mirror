@@ -1,0 +1,36 @@
+on:
+  push:
+    paths:
+      - 'forge-version.txt'
+
+name: forge download
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup variables
+        run: |
+          echo "VERSION=$(cat forge-version.txt | head -1 | tr -d [:space:])" >> $GITHUB_ENV
+
+      - name: Download forge
+        run: |
+          LINK="https://maven.minecraftforge.net/net/minecraftforge/forge/${{ env.VERSION }}/forge-${{ env.VERSION }}-installer.jar"
+          FILE="forge-${{ env.VERSION }}-installer.jar"
+          wget -O ${FILE} "${LINK}"
+          mkdir -p release && mv ${FILE} release
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            ./release/*
